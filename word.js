@@ -1,51 +1,40 @@
-var Letter = require("./letter");
+var Letter = require("./letter.js");
 
-var Word = function() {
-    this.letterGuessed = [];
-    this.word = [];
+function Word(word) {
+  this.word = word;
+  this.letterArray = word.split("");
+  this.letterObjectArray = [];
+  this.currentGuess = [];
+  this.flag = false;
+  this.makeWord = function() {
+    for (var i = 0; i < this.letterArray.length; i++) {
+      this.letterObjectArray[i] = new Letter(this.letterArray[i]);
+    }
+  };
+  this.showGuess = function(playerGuess) {
+    var correctGuess = false;
 
-    this.addLetter = function(char) {
-        this.guessedLetter.push(char);
-        this.wordUpdate(char);
-    }
-    this.createWord = function(newWord) {
-        for (i = 0; i < newWord.length; i++) {
-            this.word.push(new Letter(newWord.charAt(i)));
-        }
-    }
+    for (var i = 0; i < this.letterArray.length; i++) {
+      correctGuess = this.letterObjectArray[i].checkGuess(playerGuess);
 
-    this.wordUpdate = function(char) {
-        for (i = 0; i < this.word.length; i++) {
-            if (this.word[i].letter === char) {
-                this.word[i].setToDisplay();
-            }
-        }
-    }
-    this.showWord = function() {
-        var showWords = "";
-        for (i = 0; i < this.word.length; i++) {
-            showWords += this.word[i].getLetter() + " ";
-        }
+      this.currentGuess[i] = this.letterObjectArray[i].returnLetter();
 
-    }
-    this.allDone = function() {
-        for (i = 0; i < this.word.length; i++) {
-            if (this.word[i].showLetter === false) {
-                return false;
-            }
-        }
-        return true;
+      if (correctGuess == true) {
+        this.flag = true;
+      }
     }
 
+    if (this.flag == true) {
+      console.log("CORRECT!");
+      console.log("CURRENT GUESS: " + this.currentGuess.join(" ") + "\n");
+      this.flag = false;
+      return true;
+    } else {
+      console.log("INCORRECT!");
+      console.log("CURRENT GUESS: " + this.currentGuess.join(" ") + "\n");
+      return false;
+    }
+  };
 }
 
-    this.correctGuess = function(char) {
-        for (i = 0; i < this.word.length; i++) {
-            if (this.word[i].letter === char) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    module.exports = Word;
+module.exports = Word;
